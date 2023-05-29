@@ -1,0 +1,238 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+button {
+  overflow: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 0 10%;
+  margin: 0 auto;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  border-bottom: 2px solid black;
+  padding-top: 20px;
+}
+a {
+  text-decoration: none;
+  color: inherit;
+}
+li {
+  list-style: none;
+}
+
+.header-links {
+  display: flex;
+
+  max-width: 20%;
+  width: 100%;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+}
+
+.cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  position: absolute;
+  top: 0;
+  right: 50%;
+  border: 2px solid black;
+  border-radius: 25px;
+  padding: 20px;
+  width: 100%;
+}
+
+.cart-container {
+  position: relative;
+  max-width: 200px;
+  min-height: 50px;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+}
+
+.cart__close-btn {
+  width: 25px;
+  height: 25px;
+}
+
+.cart__close-btn {
+  width: 25px;
+  height: 25px;
+  margin-bottom: 20px;
+}
+
+.cart__close-btn img {
+  width: 100%;
+}
+
+.main {
+  padding: 20px 40px;
+  padding-right: 10px;
+  display: flex;
+  gap: 35px;
+  font-size: 22px;
+  font-family: Arial, Helvetica, sans-serif;
+}
+.sidebar {
+  padding: 20px;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar li {
+  padding: 7px 0;
+  border-bottom: 1px solid black;
+}
+.sidebar li button {
+  text-transform: uppercase;
+  font-size: 16px;
+  text-align: left;
+}
+.sidebar li:last-child {
+  border: none;
+}
+
+.main-products {
+  display: flex;
+  gap: 30px;
+  width: 100%;
+  flex-wrap: wrap;
+}
+.product {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 10px;
+  gap: 10px;
+  width: 31%;
+  border-radius: 10px;
+  font-size: 16px;
+  -webkit-box-shadow: -5px 10px 25px 1px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: -5px 10px 25px 1px rgba(0, 0, 0, 0.75);
+  box-shadow: -5px 10px 25px 1px rgba(0, 0, 0, 0.75);
+}
+.product-top {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.product-bottom {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.product img {
+  width: 100%;
+  max-height: 330px;
+}
+
+.product button {
+  width: 100%;
+  font-size: 20px;
+  background: rgb(151, 181, 231);
+  background: linear-gradient(
+    63deg,
+    rgba(151, 181, 231, 1) 0%,
+    rgba(5, 12, 42, 1) 100%
+  );
+  min-height: 40px;
+  transition: 1s ease;
+}
+
+.product button:hover {
+  background: rgb(214, 151, 231);
+  background: linear-gradient(
+    63deg,
+    rgba(214, 151, 231, 1) 0%,
+    rgba(89, 1, 1, 1) 100%
+  );
+}
+
+.loader {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: linear-gradient(#14ffe9, #ffeb3b, #ff00e0);
+  animation: animate 0.5s linear infinite;
+}
+@keyframes animate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loader span {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: linear-gradient(#14ffe9, #ffeb3b, #ff00e0);
+}
+
+.loader span:nth-child(1) {
+  filter: blur(5px);
+}
+
+.loader span:nth-child(2) {
+  filter: blur(10px);
+}
+
+.loader span:nth-child(3) {
+  filter: blur(25px);
+}
+
+.loader span:nth-child(4) {
+  filter: blur(50px);
+}
+
+.loader:after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  background: #240229;
+  border-radius: 50%;
+}
+
+.loader-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  min-height: calc(100vh - 100px);
+}
+
+#sorter {
+  border: none;
+  outline: none;
+  background: none;
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: 300;
+  cursor: pointer;
+  margin-top: 20px;
+}
