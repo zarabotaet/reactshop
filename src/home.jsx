@@ -1,34 +1,101 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
-function Sorter({ listFilter, setListFilter }) {
-  const [sorterValue, setSorterValue] = useState("recent");
-  console.log(listFilter);
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+  Text,
+  Stack,
+  HStack,
+  Button,
+  ButtonGroup,
+  Heading,
+  Divider,
+  Image,
+  ListItem,
+  List,
+  VStack,
+  Select,
+} from "@chakra-ui/react";
+import {
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  NumberIncrementStepper,
+  NumberDecrementStepper,
+} from "@chakra-ui/react";
+
+function PriceFilter({ list, setListFilter }) {
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(1000);
+
   useEffect(() => {
+    let copy = [...list];
+    if (minPrice !== "" && maxPrice !== "") {
+      copy = copy.filter((el) => el.price >= minPrice && el.price <= maxPrice);
+    }
+    setListFilter(copy);
+  }, [minPrice, maxPrice, setListFilter]);
+
+  return (
+    <form
+      action="#"
+      onSubmit={(e) => {
+        e.preventDefault();
+        setMinPrice(min);
+        setMaxPrice(max);
+      }}
+    >
+      <div>
+        <HStack>
+          <NumberInput
+            value={minPrice}
+            onChange={(value) => setMinPrice(value)}
+            placeholder="min"
+          >
+            <NumberInputField />
+          </NumberInput>
+
+          <NumberInput
+            value={maxPrice}
+            onChange={(value) => setMaxPrice(value)}
+            placeholder="max"
+          >
+            <NumberInputField />
+          </NumberInput>
+        </HStack>
+      </div>
+    </form>
+  );
+}
+
+function Sorter({ list, setListFilter }) {
+  const [sorterValue, setSorterValue] = useState("recent");
+
+  useEffect(() => {
+    let copy = [...list];
     if (sorterValue === "recent") {
-      let copy = [...listFilter];
       copy.sort((a, b) => {
         return a.id - b.id;
       });
-      setListFilter(copy);
     } else if (sorterValue === "low") {
-      let copy = [...listFilter];
       copy.sort((a, b) => {
         return a.price - b.price;
       });
-      setListFilter(copy);
     } else if (sorterValue === "high") {
-      let copy = [...listFilter];
       copy.sort((a, b) => {
         return b.price - a.price;
       });
-      setListFilter(copy);
     }
+    setListFilter(copy);
   }, [sorterValue, setListFilter]);
 
   return (
-    <select
-      name="sorter"
-      id="sorter"
+    <Select
+      placeholder="Select option"
+      value={sorterValue}
       onChange={(e) => {
         setSorterValue(e.target.value);
       }}
@@ -36,117 +103,163 @@ function Sorter({ listFilter, setListFilter }) {
       <option value="recent">Featured</option>
       <option value="low">Price: Low to High</option>
       <option value="high">Price: High to Low</option>
-    </select>
+    </Select>
   );
 }
-function Sidebar({ list, listFilter, setListFilter }) {
-  let types = [];
-  list.forEach((el) => {
-    if (types.includes(el.category)) {
-    } else {
-      types.push(el.category);
-    }
-  });
-  let domTypes = [...types].map((type) => {
+
+function Sidebar({
+  list,
+  listFilter,
+  setListFilter,
+  setMinPrice,
+  setMaxPrice,
+}) {
+  let types = [...new Set(list.map((el) => el.category))];
+
+  let domTypes = types.map((type) => {
     return (
-      <li>
+      <ListItem key={type}>
         <button
           onClick={() => {
-            setListFilter(
-              [...list].filter((product) => {
-                if (product.category === type) {
-                  return product;
-                }
-              })
+            const filteredList = list.filter(
+              (product) => product.category === type
             );
+            setListFilter(filteredList);
+            setMinPrice("");
+            setMaxPrice("");
           }}
         >
-          {type}
+          {type.toUpperCase()}
         </button>
-      </li>
+      </ListItem>
     );
   });
+
   return (
-    <ul className="sidebar">
-      <li>
-        <button onClick={() => setListFilter(list)}>All</button>
-      </li>
+    <List spacing={3}>
+      <ListItem key={"all"}>
+        <button
+          onClick={() => {
+            setListFilter(list);
+            setMinPrice("");
+            setMaxPrice("");
+          }}
+        >
+          ALL
+        </button>
+      </ListItem>
       {domTypes}
-      <Sorter listFilter={listFilter} setListFilter={setListFilter} />
-    </ul>
+      <ListItem>
+        <Sorter list={listFilter} setListFilter={setListFilter} />
+      </ListItem>
+      <ListItem>
+        <PriceFilter list={list} setListFilter={setListFilter} />
+      </ListItem>
+    </List>
   );
 }
-function Products({ list, cartItems, setCartItems }) {
-  let products = [...list].map((product) => {
-    return (
-      <div className="product">
-        <div className="product-top">
-          <img src={product.image} alt="" />
-          <h1>{product.title}</h1>
-        </div>
-        <div className="product-bottom">
-          <h2>{product.price}$</h2>
 
-          <button
+function Product({ product, cartItems, setCartItems }) {
+  const [productCounter, setProductCounter] = useState(1);
+
+  return (
+    <Card maxW="sm">
+      <CardBody>
+        <Image src={product.image} alt={product.title} borderRadius="lg" />
+        <Stack mt="6" spacing="3">
+          <Heading size="md">{product.title}</Heading>
+          <Text color="blue.600" fontSize="2xl">
+            {product.price}$
+          </Text>
+          <HStack>
+            <Button
+              onClick={() => {
+                if (productCounter > 1) {
+                  setProductCounter((num) => num - 1);
+                }
+              }}
+            >
+              -
+            </Button>
+            <h3>{productCounter}</h3>
+            <Button
+              onClick={() => {
+                if (productCounter < 9) {
+                  setProductCounter((num) => num + 1);
+                }
+              }}
+            >
+              +
+            </Button>
+          </HStack>
+        </Stack>
+      </CardBody>
+      <Divider />
+      <CardFooter>
+        <ButtonGroup spacing="2">
+          <Button
+            variant="solid"
+            colorScheme="blue"
             onClick={() => {
-              setCartItems([...cartItems, product]);
+              product.counter = productCounter;
+              setProductCounter(1);
+              setCartItems((items) => [...items, product]);
             }}
           >
             Add to cart
-          </button>
-        </div>
-      </div>
+          </Button>
+          <Link to={"/" + product.id}>
+            <Button variant="ghost" colorScheme="blue">
+              About Product
+            </Button>
+          </Link>
+        </ButtonGroup>
+      </CardFooter>
+    </Card>
+  );
+}
+
+function Products({ list, cartItems, setCartItems }) {
+  let products = list.map((product) => {
+    return (
+      <Product
+        key={product.id}
+        product={product}
+        cartItems={cartItems}
+        setCartItems={setCartItems}
+      />
     );
   });
   return <div className="main-products">{products}</div>;
 }
-export default function HomePage({ cartItems, setCartItems }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [listFilter, setListFilter] = useState(null);
-  useEffect(() => {
-    fetch("https://fakestoreapi.com/products")
-      .then((res) => {
-        if (!res.ok) {
-          setError(res.error);
-          throw new Error(res.error);
-        }
-        return res.json();
-      })
-      .then((res) => {
-        console.log("something");
-        setLoading(false);
-        setData(res);
-        setListFilter(res);
-      });
-  }, []);
 
-  if (loading) {
-    return (
-      <div className="loader-wrapper">
-        <div className="loader">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className="main">
-        <Sidebar
-          list={data}
-          listFilter={listFilter}
-          setListFilter={setListFilter}
-        />
-        <Products
-          list={listFilter}
-          cartItems={cartItems}
-          setCartItems={setCartItems}
-        />
-      </div>
-    );
-  }
+export default function HomePage({ list, cartItems, setCartItems }) {
+  const [listFilter, setListFilter] = useState(list);
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+
+  useEffect(() => {
+    let copy = [...list];
+    if (minPrice !== "" && maxPrice !== "") {
+      copy = copy.filter((el) => el.price >= minPrice && el.price <= maxPrice);
+    }
+    setListFilter(copy);
+  }, [minPrice, maxPrice]);
+
+  return (
+    <div className="main">
+      <Sidebar
+        list={list}
+        listFilter={listFilter}
+        setListFilter={setListFilter}
+        setMinPrice={setMinPrice}
+        setMaxPrice={setMaxPrice}
+      />
+      <Products
+        list={listFilter}
+        cartItems={cartItems}
+        setCartItems={setCartItems}
+      />
+    </div>
+  );
 }

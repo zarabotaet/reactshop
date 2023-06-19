@@ -1,5 +1,16 @@
 import { useState } from "react";
-
+import { Link } from "react-router-dom";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tfoot,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+} from "@chakra-ui/react";
 function Cart({ setCartOpen, cartItems }) {
   let items = [...cartItems].map((item) => {
     let title = item.title;
@@ -7,9 +18,14 @@ function Cart({ setCartOpen, cartItems }) {
       title = title.slice(0, 10) + "...";
     }
     return (
-      <li>
-        {title} - {item.price}$
-      </li>
+      // <li>
+      //   {title} - {item.price}$ * {item.counter}
+      // </li>
+      <Tr>
+        <Td>{title}</Td>
+        <Td>{item.price}</Td>
+        <Td>{item.counter}</Td>
+      </Tr>
     );
   });
   return (
@@ -21,7 +37,18 @@ function Cart({ setCartOpen, cartItems }) {
       >
         <img src="src/assets/close.png" alt="" className="cart__close-btn" />
       </button>
-      <ul>{items}</ul>
+      <TableContainer>
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Product</Th>
+              <Th>Price</Th>
+              <Th>quantity</Th>
+            </Tr>
+          </Thead>
+          <Tbody>{items}</Tbody>
+        </Table>
+      </TableContainer>
     </div>
   );
 }
@@ -45,22 +72,11 @@ function CartBtn({ cartItems }) {
 export default function Header({ cartItems }) {
   let total = 0;
   cartItems.forEach((el) => {
-    total += Number(el.price);
+    console.log(el);
+    total += Number(el.price * el.counter);
   });
   return (
     <header className="header">
-      <p className="header-logo">Logo</p>
-      <ul className="header-links">
-        <li>
-          <a href="#">home</a>
-        </li>
-        <li>
-          <a href="#">shop</a>
-        </li>
-        <li>
-          <a href="#">pages</a>
-        </li>
-      </ul>
       <div className="cart-container">
         {" "}
         <CartBtn cartItems={cartItems} />
