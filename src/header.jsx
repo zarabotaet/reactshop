@@ -35,7 +35,11 @@ function Cart({ setCartOpen, cartItems }) {
           setCartOpen(false);
         }}
       >
-        <img src="src/assets/close.png" alt="" className="cart__close-btn" />
+        <img
+          src="https://img.icons8.com/?size=512&id=46&format=png"
+          alt=""
+          className="cart__close-btn"
+        />
       </button>
       <TableContainer>
         <Table variant="simple">
@@ -64,7 +68,7 @@ function CartBtn({ cartItems }) {
         }}
         className="cart__close-btn"
       >
-        <img src="/src/assets/cart.png" alt="" />
+        <img src="https://img.icons8.com/?size=512&id=9671&format=png" alt="" />
       </button>
     );
   }
