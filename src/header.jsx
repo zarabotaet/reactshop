@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   Thead,
@@ -10,7 +10,141 @@ import {
   Td,
   TableCaption,
   TableContainer,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
+
+export function CartPage({ cartItems, setCartItems }) {
+  const navigate = useNavigate();
+  function handleDelete(itemId) {
+    const copy = [...cartItems].filter((el) => el.id !== itemId);
+    setCartItems(copy);
+  }
+  function CartTableItem({ item }) {
+    const [itemCounter, setItemCounter] = useState(item.counter);
+    item.counter = itemCounter;
+    // Нужно будет дорабатывать так, чтобы в итоге массив изменялся когда меняешь количество, например при покупке
+    return (
+      <Tr>
+        <Td>{item.title}</Td>
+        <Td>{item.price}</Td>
+        <Td>
+          <HStack>
+            <Button
+              onClick={() => {
+                if (itemCounter > 1) {
+                  setItemCounter((num) => num - 1);
+                }
+              }}
+            >
+              -
+            </Button>
+            <h3>{itemCounter}</h3>
+            <Button
+              onClick={() => {
+                if (itemCounter < 9) {
+                  setItemCounter((num) => num + 1);
+                }
+              }}
+            >
+              +
+            </Button>
+          </HStack>
+        </Td>
+        <Td>
+          <Button
+            colorScheme="red"
+            onClick={() => {
+              handleDelete(item.id);
+            }}
+          >
+            {" "}
+            Delete
+          </Button>
+        </Td>
+      </Tr>
+    );
+  }
+  let items = [...cartItems].map((item) => {
+    return (
+      <CartTableItem item={item} />
+      // // <li>
+      // //   {title} - {item.price}$ * {item.counter}
+      // // </li>
+      // <Tr>
+      //   <Td>{item.title}</Td>
+      //   <Td>{item.price}</Td>
+      //   <Td>
+      //     <HStack>
+      //       <Button
+      //         onClick={() => {
+      //           if (item.counter > 1) {
+      //             item.counter = item.counter - 1;
+      //           }
+      //         }}
+      //       >
+      //         -
+      //       </Button>
+      //       <h3>{item.counter}</h3>
+      //       <Button
+      //         onClick={() => {
+      //           if (item.counter < 9) {
+      //             item.counter = item.counter + 1;
+      //           }
+      //         }}
+      //       >
+      //         +
+      //       </Button>
+      //     </HStack>
+      //   </Td>
+      //   <Td>
+      //     <Button
+      //       onClick={() => {
+      //         handleDelete(item.id);
+      //       }}
+      //     >
+      //       {" "}
+      //       Delete
+      //     </Button>
+      //   </Td>
+      // </Tr>
+    );
+  });
+  if (cartItems.length > 0) {
+    return (
+      <div className="cart-page">
+        <TableContainer>
+          <Table variant="simple">
+            <Thead>
+              <Tr>
+                <Th>Product</Th>
+                <Th>Price</Th>
+                <Th>quantity</Th>
+              </Tr>
+            </Thead>
+            <Tbody>{items}</Tbody>
+          </Table>
+        </TableContainer>
+        <Button onClick={() => navigate(-1)} colorScheme="blue">
+          Back
+        </Button>
+        <Button colorScheme="purple">
+          <Link to="/checkout">Checkout</Link>
+        </Button>
+      </div>
+    );
+  } else {
+    return (
+      <div className="cart-page">
+        <h2>There is no cart items</h2>
+        <Button onClick={() => navigate(-1)} colorScheme="red">
+          Get something to cart
+        </Button>
+      </div>
+    );
+  }
+}
+
 function Cart({ setCartOpen, cartItems }) {
   let items = [...cartItems].map((item) => {
     let title = item.title;
@@ -24,7 +158,6 @@ function Cart({ setCartOpen, cartItems }) {
       <Tr>
         <Td>{title}</Td>
         <Td>{item.price}</Td>
-        <Td>{item.counter}</Td>
       </Tr>
     );
   });
@@ -47,12 +180,14 @@ function Cart({ setCartOpen, cartItems }) {
             <Tr>
               <Th>Product</Th>
               <Th>Price</Th>
-              <Th>quantity</Th>
             </Tr>
           </Thead>
           <Tbody>{items}</Tbody>
         </Table>
       </TableContainer>
+      <Button onClick={() => setCartOpen(false)}>
+        <Link to={"/cart"}>Full Cart</Link>
+      </Button>
     </div>
   );
 }
@@ -73,6 +208,7 @@ function CartBtn({ cartItems }) {
     );
   }
 }
+
 export default function Header({ cartItems }) {
   let total = 0;
   cartItems.forEach((el) => {

@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import Header from "./header";
 import HomePage from "./home";
+import CheckoutPage from "./checkout";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Heading } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Flex, Spacer } from "@chakra-ui/react";
-
+import { CartPage } from "./header";
 function ProductPage({ title, description, price, img }) {
   const navigate = useNavigate();
   return (
@@ -86,6 +87,18 @@ function App() {
                 list={data}
                 loading={loading}
               ></HomePage>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <CartPage cartItems={cartItems} setCartItems={setCartItems} />
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <CheckoutPage cartItems={cartItems} setCartItems={setCartItems} />
             }
           />
           {...productRoutes}

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-
 import {
   Card,
   CardHeader,
@@ -27,9 +26,9 @@ import {
   NumberDecrementStepper,
 } from "@chakra-ui/react";
 
-function PriceFilter({ list, setListFilter }) {
-  const [minPrice, setMinPrice] = useState(0);
-  const [maxPrice, setMaxPrice] = useState(1000);
+function PriceFilter({ list, setListFilter, setMinPrice, setMaxPrice }) {
+  const [minPrice, setMinPriceLocal] = useState(0);
+  const [maxPrice, setMaxPriceLocal] = useState(1000);
 
   useEffect(() => {
     let copy = [...list];
@@ -39,20 +38,19 @@ function PriceFilter({ list, setListFilter }) {
     setListFilter(copy);
   }, [minPrice, maxPrice, setListFilter]);
 
+  const handleFilter = (e) => {
+    e.preventDefault();
+    setMinPrice(minPrice);
+    setMaxPrice(maxPrice);
+  };
+
   return (
-    <form
-      action="#"
-      onSubmit={(e) => {
-        e.preventDefault();
-        setMinPrice(min);
-        setMaxPrice(max);
-      }}
-    >
+    <form action="#" onSubmit={handleFilter}>
       <div>
         <HStack>
           <NumberInput
             value={minPrice}
-            onChange={(value) => setMinPrice(value)}
+            onChange={(value) => setMinPriceLocal(value)}
             placeholder="min"
           >
             <NumberInputField />
@@ -60,7 +58,7 @@ function PriceFilter({ list, setListFilter }) {
 
           <NumberInput
             value={maxPrice}
-            onChange={(value) => setMaxPrice(value)}
+            onChange={(value) => setMaxPriceLocal(value)}
             placeholder="max"
           >
             <NumberInputField />
@@ -107,28 +105,28 @@ function Sorter({ list, setListFilter }) {
   );
 }
 
-function Sidebar({
-  list,
-  listFilter,
-  setListFilter,
-  setMinPrice,
-  setMaxPrice,
-}) {
-  let types = [...new Set(list.map((el) => el.category))];
+function Sidebar({ list, setListFilter, setMinPrice, setMaxPrice }) {
+  const [selectedCategory, setSelectedCategory] = useState("");
 
+  useEffect(() => {
+    let copy = [...list];
+    if (selectedCategory !== "") {
+      copy = copy.filter((product) => product.category === selectedCategory);
+    }
+    setListFilter(copy);
+  }, [selectedCategory, setListFilter]);
+
+  const handleCategoryFilter = (category) => {
+    setSelectedCategory(category);
+    setMinPrice("");
+    setMaxPrice("");
+  };
+
+  let types = [...new Set(list.map((el) => el.category))];
   let domTypes = types.map((type) => {
     return (
       <ListItem key={type}>
-        <button
-          onClick={() => {
-            const filteredList = list.filter(
-              (product) => product.category === type
-            );
-            setListFilter(filteredList);
-            setMinPrice("");
-            setMaxPrice("");
-          }}
-        >
+        <button onClick={() => handleCategoryFilter(type)}>
           {type.toUpperCase()}
         </button>
       </ListItem>
@@ -138,22 +136,19 @@ function Sidebar({
   return (
     <List spacing={3}>
       <ListItem key={"all"}>
-        <button
-          onClick={() => {
-            setListFilter(list);
-            setMinPrice("");
-            setMaxPrice("");
-          }}
-        >
-          ALL
-        </button>
+        <button onClick={() => handleCategoryFilter("")}>ALL</button>
       </ListItem>
       {domTypes}
       <ListItem>
-        <Sorter list={listFilter} setListFilter={setListFilter} />
+        <Sorter list={list} setListFilter={setListFilter} />
       </ListItem>
       <ListItem>
-        <PriceFilter list={list} setListFilter={setListFilter} />
+        <PriceFilter
+          list={list}
+          setListFilter={setListFilter}
+          setMinPrice={setMinPrice}
+          setMaxPrice={setMaxPrice}
+        />
       </ListItem>
     </List>
   );
@@ -171,27 +166,6 @@ function Product({ product, cartItems, setCartItems }) {
           <Text color="blue.600" fontSize="2xl">
             {product.price}$
           </Text>
-          <HStack>
-            <Button
-              onClick={() => {
-                if (productCounter > 1) {
-                  setProductCounter((num) => num - 1);
-                }
-              }}
-            >
-              -
-            </Button>
-            <h3>{productCounter}</h3>
-            <Button
-              onClick={() => {
-                if (productCounter < 9) {
-                  setProductCounter((num) => num + 1);
-                }
-              }}
-            >
-              +
-            </Button>
-          </HStack>
         </Stack>
       </CardBody>
       <Divider />
@@ -203,7 +177,10 @@ function Product({ product, cartItems, setCartItems }) {
             onClick={() => {
               product.counter = productCounter;
               setProductCounter(1);
-              setCartItems((items) => [...items, product]);
+              if (cartItems.includes(product)) {
+              } else {
+                setCartItems((items) => [...items, product]);
+              }
             }}
           >
             Add to cart
@@ -250,7 +227,6 @@ export default function HomePage({ list, cartItems, setCartItems }) {
     <div className="main">
       <Sidebar
         list={list}
-        listFilter={listFilter}
         setListFilter={setListFilter}
         setMinPrice={setMinPrice}
         setMaxPrice={setMaxPrice}
