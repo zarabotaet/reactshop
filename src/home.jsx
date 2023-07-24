@@ -156,6 +156,9 @@ function Sidebar({ list, setListFilter, setMinPrice, setMaxPrice }) {
 
 function Product({ product, cartItems, setCartItems }) {
   const [productCounter, setProductCounter] = useState(1);
+  useEffect(() => {
+    product.counter = productCounter;
+  }, []);
 
   return (
     <Card maxW="sm">

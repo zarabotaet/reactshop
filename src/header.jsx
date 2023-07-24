@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Table,
   Thead,
   Tbody,
-  Tfoot,
   Tr,
   Th,
   Td,
@@ -16,14 +15,15 @@ import {
 
 export function CartPage({ cartItems, setCartItems }) {
   const navigate = useNavigate();
+
   function handleDelete(itemId) {
-    const copy = [...cartItems].filter((el) => el.id !== itemId);
+    const copy = cartItems.filter((el) => el.id !== itemId);
     setCartItems(copy);
   }
+
   function CartTableItem({ item }) {
     const [itemCounter, setItemCounter] = useState(item.counter);
     item.counter = itemCounter;
-    // Нужно будет дорабатывать так, чтобы в итоге массив изменялся когда меняешь количество, например при покупке
     return (
       <Tr>
         <Td>{item.title}</Td>
@@ -58,58 +58,17 @@ export function CartPage({ cartItems, setCartItems }) {
               handleDelete(item.id);
             }}
           >
-            {" "}
             Delete
           </Button>
         </Td>
       </Tr>
     );
   }
-  let items = [...cartItems].map((item) => {
-    return (
-      <CartTableItem item={item} />
-      // // <li>
-      // //   {title} - {item.price}$ * {item.counter}
-      // // </li>
-      // <Tr>
-      //   <Td>{item.title}</Td>
-      //   <Td>{item.price}</Td>
-      //   <Td>
-      //     <HStack>
-      //       <Button
-      //         onClick={() => {
-      //           if (item.counter > 1) {
-      //             item.counter = item.counter - 1;
-      //           }
-      //         }}
-      //       >
-      //         -
-      //       </Button>
-      //       <h3>{item.counter}</h3>
-      //       <Button
-      //         onClick={() => {
-      //           if (item.counter < 9) {
-      //             item.counter = item.counter + 1;
-      //           }
-      //         }}
-      //       >
-      //         +
-      //       </Button>
-      //     </HStack>
-      //   </Td>
-      //   <Td>
-      //     <Button
-      //       onClick={() => {
-      //         handleDelete(item.id);
-      //       }}
-      //     >
-      //       {" "}
-      //       Delete
-      //     </Button>
-      //   </Td>
-      // </Tr>
-    );
+
+  let items = cartItems.map((item) => {
+    return <CartTableItem item={item} key={item.id} />;
   });
+
   if (cartItems.length > 0) {
     return (
       <div className="cart-page">
@@ -119,7 +78,7 @@ export function CartPage({ cartItems, setCartItems }) {
               <Tr>
                 <Th>Product</Th>
                 <Th>Price</Th>
-                <Th>quantity</Th>
+                <Th>Quantity</Th>
               </Tr>
             </Thead>
             <Tbody>{items}</Tbody>
@@ -136,31 +95,78 @@ export function CartPage({ cartItems, setCartItems }) {
   } else {
     return (
       <div className="cart-page">
-        <h2>There is no cart items</h2>
+        <h2>There are no items in the cart</h2>
         <Button onClick={() => navigate(-1)} colorScheme="red">
-          Get something to cart
+          Add items to cart
         </Button>
       </div>
     );
   }
 }
 
-function Cart({ setCartOpen, cartItems }) {
-  let items = [...cartItems].map((item) => {
-    let title = item.title;
-    if (title.length > 10) {
-      title = title.slice(0, 10) + "...";
-    }
+function PreviewCartItem({ item, setCartItems, cartItems }) {
+  const [productCounter, setProductCounter] = useState(item.counter);
+
+  useEffect(() => {
+    handleCounterChange(item.id, productCounter);
+  }, [productCounter]);
+
+  function handleCounterChange(itemId, newCounter) {
+    const copy = cartItems.map((el) => {
+      if (el.id === itemId) {
+        el.counter = newCounter;
+      }
+      return el;
+    });
+    setCartItems(copy);
+  }
+
+  let title = item.title;
+  if (title.length > 10) {
+    title = title.slice(0, 10) + "...";
+  }
+
+  return (
+    <Tr>
+      <Td>{title}</Td>
+      <Td>{item.price}</Td>
+    </Tr>
+  );
+}
+
+function Cart({ setCartOpen, cartItems, setCartItems }) {
+  const [total, setTotal] = useState(0);
+
+  useEffect(() => {
+    let calculatedTotal = 0;
+    cartItems.forEach((el) => {
+      calculatedTotal += Number(el.price * el.counter);
+    });
+    setTotal(calculatedTotal);
+  }, [cartItems]);
+
+  function handleCounterChange(itemId, newCounter) {
+    const copy = cartItems.map((el) => {
+      if (el.id === itemId) {
+        el.counter = newCounter;
+      }
+      return el;
+    });
+    setCartItems(copy);
+  }
+
+  let items = cartItems.map((item) => {
     return (
-      // <li>
-      //   {title} - {item.price}$ * {item.counter}
-      // </li>
-      <Tr>
-        <Td>{title}</Td>
-        <Td>{item.price}</Td>
-      </Tr>
+      <PreviewCartItem
+        item={item}
+        key={item.id}
+        setCartItems={setCartItems}
+        cartItems={cartItems}
+        handleCounterChange={handleCounterChange}
+      />
     );
   });
+
   return (
     <div className="cart">
       <button
@@ -174,6 +180,7 @@ function Cart({ setCartOpen, cartItems }) {
           className="cart__close-btn"
         />
       </button>
+      <p>Total: {total}</p>
       <TableContainer>
         <Table variant="simple">
           <Thead>
@@ -191,10 +198,18 @@ function Cart({ setCartOpen, cartItems }) {
     </div>
   );
 }
-function CartBtn({ cartItems }) {
+
+function CartBtn({ cartItems, setCartItems }) {
   const [cartOpen, setCartOpen] = useState(false);
+
   if (cartOpen) {
-    return <Cart setCartOpen={setCartOpen} cartItems={cartItems} />;
+    return (
+      <Cart
+        setCartOpen={setCartOpen}
+        cartItems={cartItems}
+        setCartItems={setCartItems}
+      />
+    );
   } else {
     return (
       <button
@@ -203,25 +218,23 @@ function CartBtn({ cartItems }) {
         }}
         className="cart__close-btn"
       >
-        <img src="https://img.icons8.com/?size=512&id=9671&format=png" alt="" />
+        {cartItems.length > 0 ? (
+          <div className="cart-num">{cartItems.length}</div>
+        ) : (
+          false
+        )}
+        <img src="https://img.icons8.com/?size=512&id=967" alt="" />
       </button>
     );
   }
 }
 
-export default function Header({ cartItems }) {
-  let total = 0;
-  cartItems.forEach((el) => {
-    console.log(el);
-    total += Number(el.price * el.counter);
-  });
+export default function Header({ cartItems, setCartItems }) {
   return (
     <header className="header">
       <div className="cart-container">
-        {" "}
-        <CartBtn cartItems={cartItems} />
+        <CartBtn cartItems={cartItems} setCartItems={setCartItems} />
       </div>
-      <p>Total: {total}$</p>
     </header>
   );
 }

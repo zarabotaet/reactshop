@@ -70,6 +70,7 @@ li {
 .cart__close-btn {
   width: 25px;
   height: 25px;
+  position: relative;
 }
 
 .cart__close-btn {
@@ -332,4 +333,17 @@ button > a {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.cart-num {
+  background-color: black;
+  font-size: 15px;
+  color: white;
+  border-radius: 50%;
+
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  top: -10px;
+  right: -10px;
 }

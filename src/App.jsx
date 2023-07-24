@@ -8,18 +8,31 @@ import { Text } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Flex, Spacer } from "@chakra-ui/react";
 import { CartPage } from "./header";
-function ProductPage({ title, description, price, img }) {
+function ProductPage({ product, cartItems, setCartItems }) {
+  const [productCounter, setProductCounter] = useState(product.counter);
   const navigate = useNavigate();
   return (
     <Flex className="product-page">
       <div className="product-page__left">
-        <img src={img} alt={title} />
+        <img src={product.image} alt={product.title} />
       </div>
       <Spacer />
       <div className="product-page__right">
-        <Heading>{title}</Heading>
-        <h3>{price}$</h3>
-        <Text fontSize="xl">{description}</Text>
+        <Heading>{product.title}</Heading>
+        <h3>{product.price}$</h3>
+        <Text fontSize="xl">{product.description}</Text>
+        <Button
+          variant="solid"
+          colorScheme="blue"
+          onClick={() => {
+            if (cartItems.includes(product)) {
+            } else {
+              setCartItems((items) => [...items, product]);
+            }
+          }}
+        >
+          Add to cart
+        </Button>
         <Button colorScheme="blue" onClick={() => navigate(-1)}>
           Back
         </Button>
@@ -65,10 +78,9 @@ function App() {
           path={"/" + product.id}
           element={
             <ProductPage
-              title={product.title}
-              description={product.description}
-              price={product.price}
-              img={product.image}
+              product={product}
+              cartItems={cartItems}
+              setCartItems={setCartItems}
             />
           }
         />
@@ -76,7 +88,7 @@ function App() {
     });
     return (
       <>
-        <Header cartItems={cartItems}></Header>
+        <Header cartItems={cartItems} setCartItems={setCartItems}></Header>
         <Routes>
           <Route
             path="/"
