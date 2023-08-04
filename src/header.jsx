@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react";
 
 export function CartPage({ cartItems, setCartItems }) {
+
   const navigate = useNavigate();
 
   function handleDelete(itemId) {
@@ -223,7 +224,7 @@ function CartBtn({ cartItems, setCartItems }) {
         ) : (
           false
         )}
-        <img src="https://img.icons8.com/?size=512&id=967" alt="" />
+        <img src="https://img.icons8.com/ios/50/shopping-cart--v1.png" alt="" />
       </button>
     );
   }

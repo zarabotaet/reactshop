@@ -1,4 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { createStore, createEvent } from "effector";
+import { useStore } from "effector-react";
 import Header from "./header";
 import HomePage from "./home";
 import CheckoutPage from "./checkout";
@@ -8,8 +10,38 @@ import { Text } from "@chakra-ui/react";
 import { Button, ButtonGroup } from "@chakra-ui/react";
 import { Flex, Spacer } from "@chakra-ui/react";
 import { CartPage } from "./header";
+
+const setCartItems = createEvent();
+const changeOne = createEvent();
+const changeCounter = createEvent();
+
+const cartItemsStore = createStore([])
+
+  .on(setCartItems, (store, newStore) => {
+    return newStore;
+  })
+  .on(changeOne, (store, id, newOne) => {
+    return store.map(el => {
+      if (el.id === id) {
+        return newOne;
+      } else {
+        return el;
+      }
+    })
+  })
+  .on(changeCounter, (store, id, newCount) => {
+    return store.map(el => {
+      if (el.id === id) {
+        el.counter = newCount;
+        return el;
+      } else {
+        return el;
+      }
+    })
+  });
+
 function ProductPage({ product, cartItems, setCartItems }) {
-  const [productCounter, setProductCounter] = useState(product.counter);
+
   const navigate = useNavigate();
   return (
     <Flex className="product-page">
@@ -41,7 +73,8 @@ function ProductPage({ product, cartItems, setCartItems }) {
   );
 }
 function App() {
-  const [cartItems, setCartItems] = useState([]);
+  const cartItems = useStore(cartItemsStore);
+
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -60,6 +93,7 @@ function App() {
         setData(res);
       });
   }, []);
+
   if (loading) {
     return (
       <div className="loader-wrapper">
