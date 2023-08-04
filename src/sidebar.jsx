@@ -6,132 +6,99 @@ import {
   NumberInputField,
   Select,
 } from "@chakra-ui/react";
+import { useUnit } from "effector-react";
 import { useEffect, useState } from "react";
+import { products$ } from "./model/products";
+import {
+  HIGH,
+  LOW,
+  RECENT,
+  categories$,
+  maxPrices$,
+  minPrices$,
+  setMaxPrice,
+  setMinPrice,
+  setSelectedCategory,
+  setSorterValue,
+  sorterValue$,
+} from "./model/filter";
 
-function PriceFilter({ list, setListFilter, setMinPrice, setMaxPrice }) {
-  const [minPrice, setMinPriceLocal] = useState(0);
-  const [maxPrice, setMaxPriceLocal] = useState(1000);
-
-  useEffect(() => {
-    let copy = [...list];
-    if (minPrice !== "" && maxPrice !== "") {
-      copy = copy.filter((el) => el.price >= minPrice && el.price <= maxPrice);
-    }
-    setListFilter(copy);
-  }, [minPrice, maxPrice, setListFilter]);
-
-  const handleFilter = (e) => {
-    e.preventDefault();
-    setMinPrice(minPrice);
-    setMaxPrice(maxPrice);
-  };
+function PriceFilter() {
+  const [minPrice, maxPrice] = useUnit([minPrices$, maxPrices$]);
 
   return (
-    <form action="#" onSubmit={handleFilter}>
-      <div>
-        <HStack>
-          <NumberInput
-            value={minPrice}
-            onChange={(value) => setMinPriceLocal(value)}
-            placeholder="min"
-          >
-            <NumberInputField />
-          </NumberInput>
+    <ListItem>
+      <form action="#" onSubmit={() => {}}>
+        <div>
+          <HStack>
+            <NumberInput
+              value={minPrice}
+              onChange={setMinPrice}
+              placeholder="min"
+            >
+              <NumberInputField />
+            </NumberInput>
 
-          <NumberInput
-            value={maxPrice}
-            onChange={(value) => setMaxPriceLocal(value)}
-            placeholder="max"
-          >
-            <NumberInputField />
-          </NumberInput>
-        </HStack>
-      </div>
-    </form>
+            <NumberInput
+              value={maxPrice}
+              onChange={setMaxPrice}
+              placeholder="max"
+            >
+              <NumberInputField />
+            </NumberInput>
+          </HStack>
+        </div>
+      </form>
+    </ListItem>
   );
 }
 
-function Sorter({ list, setListFilter }) {
-  const [sorterValue, setSorterValue] = useState("recent");
-
-  useEffect(() => {
-    let copy = [...list];
-    if (sorterValue === "recent") {
-      copy.sort((a, b) => {
-        return a.id - b.id;
-      });
-    } else if (sorterValue === "low") {
-      copy.sort((a, b) => {
-        return a.price - b.price;
-      });
-    } else if (sorterValue === "high") {
-      copy.sort((a, b) => {
-        return b.price - a.price;
-      });
-    }
-    setListFilter(copy);
-  }, [sorterValue, setListFilter]);
+function Sorter() {
+  const sorterValue = useUnit(sorterValue$);
 
   return (
-    <Select
-      placeholder="Select option"
-      value={sorterValue}
-      onChange={(e) => {
-        setSorterValue(e.target.value);
-      }}
-    >
-      <option value="recent">Featured</option>
-      <option value="low">Price: Low to High</option>
-      <option value="high">Price: High to Low</option>
-    </Select>
+    <ListItem>
+      <Select
+        value={sorterValue}
+        onChange={(e) => {
+          setSorterValue(e.target.value);
+        }}
+      >
+        <option value={RECENT}>Featured</option>
+        <option value={LOW}>Price: Low to High</option>
+        <option value={HIGH}>Price: High to Low</option>
+      </Select>
+    </ListItem>
   );
 }
 
-export function Sidebar({ list, setListFilter, setMinPrice, setMaxPrice }) {
-  const [selectedCategory, setSelectedCategory] = useState("");
+function Categories() {
+  const [categories] = useUnit([categories$]);
 
-  useEffect(() => {
-    let copy = [...list];
-    if (selectedCategory !== "") {
-      copy = copy.filter((product) => product.category === selectedCategory);
-    }
-    setListFilter(copy);
-  }, [selectedCategory, setListFilter]);
-
-  const handleCategoryFilter = (category) => {
-    setSelectedCategory(category);
-    setMinPrice("");
-    setMaxPrice("");
-  };
-
-  let types = [...new Set(list.map((el) => el.category))];
-  let domTypes = types.map((type) => {
-    return (
-      <ListItem key={type}>
-        <button onClick={() => handleCategoryFilter(type)}>
-          {type.toUpperCase()}
-        </button>
+  return (
+    <>
+      <ListItem>
+        <button onClick={() => setSelectedCategory("")}>ALL</button>
       </ListItem>
-    );
-  });
+      {categories.map((category) => {
+        return (
+          <ListItem key={category}>
+            <button onClick={() => setSelectedCategory(category)}>
+              {category.toUpperCase()}
+            </button>
+          </ListItem>
+        );
+      })}
+    </>
+  );
+}
 
+export function Sidebar() {
   return (
     <List spacing={3}>
-      <ListItem key={"all"}>
-        <button onClick={() => handleCategoryFilter("")}>ALL</button>
-      </ListItem>
-      {domTypes}
-      <ListItem>
-        <Sorter list={list} setListFilter={setListFilter} />
-      </ListItem>
-      <ListItem>
-        <PriceFilter
-          list={list}
-          setListFilter={setListFilter}
-          setMinPrice={setMinPrice}
-          setMaxPrice={setMaxPrice}
-        />
-      </ListItem>
+      <Categories />
+      <Sorter />
+      <PriceFilter />
     </List>
   );
 }

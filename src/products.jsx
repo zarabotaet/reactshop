@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { productsFiltered$ } from "./model/products";
+import { useUnit } from "effector-react";
 
 function Product({ product, cartItems = [] }) {
   const [productCounter, setProductCounter] = useState(1);
@@ -58,9 +60,18 @@ function Product({ product, cartItems = [] }) {
   );
 }
 
-export function Products({ list }) {
-  let products = list.map((product) => {
-    return <Product key={product.id} product={product} />;
-  });
-  return <div className="main-products">{products}</div>;
+export function Products() {
+  const list = useUnit(productsFiltered$);
+
+  if (list.length === 0) {
+    return "No items for your filter";
+  }
+
+  return (
+    <div className="main-products">
+      {list.map((product) => {
+        return <Product key={product.id} product={product} />;
+      })}
+    </div>
+  );
 }
