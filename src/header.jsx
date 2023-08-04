@@ -12,25 +12,10 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
+import { useUnit } from "effector-react";
+import { cartItems$, totalPrice$ } from "./model/cart";
 
-function PreviewCartItem({ item, setCartItems, cartItems }) {
-  const [productCounter, setProductCounter] = useState(item.counter);
-
-  useEffect(() => {
-    handleCounterChange(item.id, productCounter);
-  }, [productCounter]);
-
-  function handleCounterChange(itemId, newCounter) {
-    const copy = cartItems.map((el) => {
-      if (el.id === itemId) {
-        el.counter = newCounter;
-      }
-      return el;
-    });
-    setCartItems(copy);
-  }
-
-  let title = item.title;
+function PreviewCartItem({ title, price }) {
   if (title.length > 10) {
     title = title.slice(0, 10) + "...";
   }
@@ -38,58 +23,28 @@ function PreviewCartItem({ item, setCartItems, cartItems }) {
   return (
     <Tr>
       <Td>{title}</Td>
-      <Td>{item.price}</Td>
+      <Td>{price}</Td>
     </Tr>
   );
 }
 
-function Cart({ setCartOpen, cartItems, setCartItems }) {
-  const [total, setTotal] = useState(0);
-
-  useEffect(() => {
-    let calculatedTotal = 0;
-    cartItems.forEach((el) => {
-      calculatedTotal += Number(el.price * el.counter);
-    });
-    setTotal(calculatedTotal);
-  }, [cartItems]);
-
-  function handleCounterChange(itemId, newCounter) {
-    const copy = cartItems.map((el) => {
-      if (el.id === itemId) {
-        el.counter = newCounter;
-      }
-      return el;
-    });
-    setCartItems(copy);
-  }
+function Cart({ closeCartPreview }) {
+  const [cartItems, totalPrice] = useUnit([cartItems$, totalPrice$]);
 
   let items = cartItems.map((item) => {
-    return (
-      <PreviewCartItem
-        item={item}
-        key={item.id}
-        setCartItems={setCartItems}
-        cartItems={cartItems}
-        handleCounterChange={handleCounterChange}
-      />
-    );
+    return <PreviewCartItem {...item} key={item.id} />;
   });
 
   return (
     <div className="cart">
-      <button
-        onClick={() => {
-          setCartOpen(false);
-        }}
-      >
+      <button onClick={closeCartPreview}>
         <img
           src="https://img.icons8.com/?size=512&id=46&format=png"
           alt=""
           className="cart__close-btn"
         />
       </button>
-      <p>Total: {total}</p>
+      <p>Total: {totalPrice}</p>
       <TableContainer>
         <Table variant="simple">
           <Thead>
@@ -101,23 +56,30 @@ function Cart({ setCartOpen, cartItems, setCartItems }) {
           <Tbody>{items}</Tbody>
         </Table>
       </TableContainer>
-      <Button onClick={() => setCartOpen(false)}>
+      <Button onClick={closeCartPreview}>
         <Link to={"/cart"}>Full Cart</Link>
       </Button>
     </div>
   );
 }
 
-function CartBtn({ cartItems = [] }) {
+function CartBtn() {
   const [cartOpen, setCartOpen] = useState(false);
+  const cartItems = useUnit(cartItems$);
 
   if (cartOpen) {
-    return <Cart setCartOpen={setCartOpen} cartItems={cartItems} />;
+    return (
+      <Cart
+        closeCartPreview={() => {
+          setCartOpen(false);
+        }}
+      />
+    );
   } else {
     return (
       <button
         onClick={() => {
-          if (cartItems.length >= 1) setCartOpen(true);
+          if (cartItems.length > 0) setCartOpen(true);
         }}
         className="cart__close-btn"
       >
@@ -132,7 +94,7 @@ function CartBtn({ cartItems = [] }) {
   }
 }
 
-export function Header({ cartItems, setCartItems }) {
+export function Header() {
   return (
     <header className="header">
       <div className="cart-container">

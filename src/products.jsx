@@ -14,13 +14,9 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { productsFiltered$ } from "./model/products";
 import { useUnit } from "effector-react";
+import { setItemInCart } from "./model/cart";
 
-function Product({ product, cartItems = [] }) {
-  const [productCounter, setProductCounter] = useState(1);
-  useEffect(() => {
-    product.counter = productCounter;
-  }, []);
-
+function Product({ product }) {
   return (
     <Card maxW="sm">
       <CardBody>
@@ -38,14 +34,7 @@ function Product({ product, cartItems = [] }) {
           <Button
             variant="solid"
             colorScheme="blue"
-            onClick={() => {
-              product.counter = productCounter;
-              setProductCounter(1);
-              if (cartItems.includes(product)) {
-              } else {
-                setCartItems((items) => [...items, product]);
-              }
-            }}
+            onClick={() => setItemInCart(product)}
           >
             Add to cart
           </Button>
@@ -61,15 +50,15 @@ function Product({ product, cartItems = [] }) {
 }
 
 export function Products() {
-  const list = useUnit(productsFiltered$);
+  const products = useUnit(productsFiltered$);
 
-  if (list.length === 0) {
+  if (products.length === 0) {
     return "No items for your filter";
   }
 
   return (
     <div className="main-products">
-      {list.map((product) => {
+      {products.map((product) => {
         return <Product key={product.id} product={product} />;
       })}
     </div>

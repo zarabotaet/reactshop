@@ -1,29 +1,29 @@
 import { createEvent, createStore } from "effector";
 
-export const setCartItems = createEvent();
-export const changeOne = createEvent();
-export const changeCounter = createEvent();
+export const setItemInCart = createEvent();
+export const incItemAmount = createEvent();
+export const decItemAmount = createEvent();
 
-export const cartItemsStore = createStore([])
-  .on(setCartItems, (store, newStore) => {
-    return newStore;
-  })
-  .on(changeOne, (store, id, newOne) => {
+export const cartItems$ = createStore([])
+  .on(setItemInCart, (store, newItem) => [...store, { ...newItem, amount: 1 }])
+  .on(incItemAmount, (store, id) => {
     return store.map((el) => {
       if (el.id === id) {
-        return newOne;
-      } else {
-        return el;
+        return { ...el, amount: el.amount + 1 };
       }
     });
   })
-  .on(changeCounter, (store, id, newCount) => {
+  .on(decItemAmount, (store, id) => {
     return store.map((el) => {
       if (el.id === id) {
-        el.counter = newCount;
-        return el;
-      } else {
-        return el;
+        return { ...el, amount: el.amount - 1 };
       }
     });
   });
+
+export const totalPrice$ = cartItems$.map((cartItems) => {
+  return cartItems.reduce(
+    (acc, item) => acc + Number(item.price * item.amount),
+    0
+  );
+});
