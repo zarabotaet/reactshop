@@ -14,7 +14,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { productsFiltered$ } from "./model/products";
 import { useUnit } from "effector-react";
-import { setItemInCart } from "./model/cart";
+import { addItemInCart } from "./model/cart";
 
 function Product({ product }) {
   return (
@@ -34,7 +34,7 @@ function Product({ product }) {
           <Button
             variant="solid"
             colorScheme="blue"
-            onClick={() => setItemInCart(product)}
+            onClick={() => addItemInCart(product)}
           >
             Add to cart
           </Button>

@@ -13,9 +13,9 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { useUnit } from "effector-react";
-import { cartItems$, totalPrice$ } from "./model/cart";
+import { cartItems$, cartItemsList$, totalPrice$ } from "./model/cart";
 
-function PreviewCartItem({ title, price }) {
+function PreviewCartItem({ title, price, amount }) {
   if (title.length > 10) {
     title = title.slice(0, 10) + "...";
   }
@@ -24,12 +24,13 @@ function PreviewCartItem({ title, price }) {
     <Tr>
       <Td>{title}</Td>
       <Td>{price}</Td>
+      <Td>{amount}</Td>
     </Tr>
   );
 }
 
 function Cart({ closeCartPreview }) {
-  const [cartItems, totalPrice] = useUnit([cartItems$, totalPrice$]);
+  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$]);
 
   let items = cartItems.map((item) => {
     return <PreviewCartItem {...item} key={item.id} />;
@@ -51,6 +52,7 @@ function Cart({ closeCartPreview }) {
             <Tr>
               <Th>Product</Th>
               <Th>Price</Th>
+              <Th>Amount</Th>
             </Tr>
           </Thead>
           <Tbody>{items}</Tbody>
@@ -65,7 +67,7 @@ function Cart({ closeCartPreview }) {
 
 function CartBtn() {
   const [cartOpen, setCartOpen] = useState(false);
-  const cartItems = useUnit(cartItems$);
+  const cartItemsList = useUnit(cartItemsList$);
 
   if (cartOpen) {
     return (
@@ -79,12 +81,12 @@ function CartBtn() {
     return (
       <button
         onClick={() => {
-          if (cartItems.length > 0) setCartOpen(true);
+          if (cartItemsList.length > 0) setCartOpen(true);
         }}
         className="cart__close-btn"
       >
-        {cartItems.length > 0 ? (
-          <div className="cart-num">{cartItems.length}</div>
+        {cartItemsList.length > 0 ? (
+          <div className="cart-num">{cartItemsList.length}</div>
         ) : (
           false
         )}

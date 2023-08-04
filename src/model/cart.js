@@ -1,28 +1,44 @@
 import { createEvent, createStore } from "effector";
 
-export const setItemInCart = createEvent();
+export const addItemInCart = createEvent();
+export const deleteItemInCart = createEvent();
 export const incItemAmount = createEvent();
 export const decItemAmount = createEvent();
 
-export const cartItems$ = createStore([])
-  .on(setItemInCart, (store, newItem) => [...store, { ...newItem, amount: 1 }])
-  .on(incItemAmount, (store, id) => {
-    return store.map((el) => {
-      if (el.id === id) {
-        return { ...el, amount: el.amount + 1 };
-      }
-    });
+export const cartItems$ = createStore({})
+  .on(addItemInCart, (cartItems, newItem) => {
+    cartItems = { ...cartItems };
+    if (newItem.id in cartItems) {
+      cartItems[newItem.id].amount++;
+    } else {
+      cartItems[newItem.id] = { ...newItem, amount: 1 };
+    }
+
+    return cartItems;
+  })
+  .on(deleteItemInCart, (cartItems, id) => {
+    cartItems = { ...cartItems };
+    delete cartItems[id];
+    return cartItems;
+  })
+  .on(incItemAmount, (cartItems, id) => {
+    cartItems = { ...cartItems };
+    cartItems[id].amount++;
+    return cartItems;
   })
   .on(decItemAmount, (store, id) => {
-    return store.map((el) => {
-      if (el.id === id) {
-        return { ...el, amount: el.amount - 1 };
-      }
-    });
+    cartItems = { ...cartItems };
+    if (cartItems[id].amount === 0) {
+      delete cartItems[id];
+    } else {
+      cartItems[id].amount--;
+    }
+    return cartItems;
   });
 
+export const cartItemsList$ = cartItems$.map(Object.values);
 export const totalPrice$ = cartItems$.map((cartItems) => {
-  return cartItems.reduce(
+  return Object.values(cartItems).reduce(
     (acc, item) => acc + Number(item.price * item.amount),
     0
   );

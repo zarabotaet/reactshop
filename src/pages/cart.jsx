@@ -1,59 +1,55 @@
-import { Route } from "react-router-dom";
+import { Link, Route, useNavigate } from "react-router-dom";
+import {
+  cartItemsList$,
+  deleteItemInCart,
+  incItemAmount,
+  totalPrice$,
+} from "../model/cart";
+import { useUnit } from "effector-react";
+import {
+  Button,
+  HStack,
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Th,
+  Thead,
+  Tr,
+} from "@chakra-ui/react";
+
+function CartItem({ title, price, id, amount }) {
+  return (
+    <Tr>
+      <Td>{title}</Td>
+      <Td>{price}</Td>
+      <Td>
+        <HStack>
+          <Button onClick={() => decItemAmount(id)}>-</Button>
+          <h3>{amount}</h3>
+          <Button onClick={() => incItemAmount(id)}>+</Button>
+        </HStack>
+      </Td>
+      <Td>
+        <Button
+          colorScheme="red"
+          onClick={() => {
+            deleteItemInCart(id);
+          }}
+        >
+          Delete
+        </Button>
+      </Td>
+    </Tr>
+  );
+}
 
 export function Cart() {
   const navigate = useNavigate();
-
-  function handleDelete(itemId) {
-    const copy = cartItems.filter((el) => el.id !== itemId);
-    setCartItems(copy);
-  }
-
-  function CartTableItem({ item }) {
-    const [itemCounter, setItemCounter] = useState(item.counter);
-    item.counter = itemCounter;
-    return (
-      <Tr>
-        <Td>{item.title}</Td>
-        <Td>{item.price}</Td>
-        <Td>
-          <HStack>
-            <Button
-              onClick={() => {
-                if (itemCounter > 1) {
-                  setItemCounter((num) => num - 1);
-                }
-              }}
-            >
-              -
-            </Button>
-            <h3>{itemCounter}</h3>
-            <Button
-              onClick={() => {
-                if (itemCounter < 9) {
-                  setItemCounter((num) => num + 1);
-                }
-              }}
-            >
-              +
-            </Button>
-          </HStack>
-        </Td>
-        <Td>
-          <Button
-            colorScheme="red"
-            onClick={() => {
-              handleDelete(item.id);
-            }}
-          >
-            Delete
-          </Button>
-        </Td>
-      </Tr>
-    );
-  }
+  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$]);
 
   let items = cartItems.map((item) => {
-    return <CartTableItem item={item} key={item.id} />;
+    return <CartItem {...item} key={item.id} />;
   });
 
   if (cartItems.length > 0) {
@@ -74,6 +70,7 @@ export function Cart() {
         <Button onClick={() => navigate(-1)} colorScheme="blue">
           Back
         </Button>
+        <p>Total price: {totalPrice}$</p>
         <Button colorScheme="purple">
           <Link to="/checkout">Checkout</Link>
         </Button>
