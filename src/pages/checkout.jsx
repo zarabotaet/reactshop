@@ -17,17 +17,21 @@ import {
   Input,
   Stack,
 } from "@chakra-ui/react";
+import { cartItemsList$, totalPrice$ } from "../model/cart";
+import { useUnit } from "effector-react";
 
 export function Checkout() {
   const [isComplete, setIsComplete] = useState(false);
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$]);
+
   const items = cartItems.map((item) => {
     return (
       <Tr>
         <Td>{item.title}</Td>
         <Td>{item.price}</Td>
-        <Td>{item.counter}</Td>
+        <Td>{item.amount}</Td>
       </Tr>
     );
   });
@@ -50,7 +54,7 @@ export function Checkout() {
               <Tr>
                 <Th>Product</Th>
                 <Th>Price</Th>
-                <Th>quantity</Th>
+                <Th>Amount</Th>
               </Tr>
             </Thead>
             <Tbody>{items}</Tbody>
@@ -73,6 +77,8 @@ export function Checkout() {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
           ></Input>
+          <p>Total price: {totalPrice}$</p>
+
           <Button
             colorScheme="orange"
             onClick={() => {
