@@ -1,6 +1,7 @@
 import { Link, Route, useNavigate } from "react-router-dom";
 import {
   cartItemsList$,
+  decItemAmount,
   deleteItemInCart,
   incItemAmount,
   totalPrice$,

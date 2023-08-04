@@ -8,12 +8,10 @@ import { Pages } from "./pages";
 import { products$, productsPending$ } from "./model/products";
 import { appLoaded } from "./model";
 
+appLoaded();
+
 export function App() {
   const [products, productsPending] = useUnit([products$, productsPending$]);
-
-  useEffect(() => {
-    appLoaded();
-  }, []);
 
   if (productsPending) {
     return <Loader />;

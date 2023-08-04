@@ -1,8 +1,16 @@
-import { Button, Flex, Heading, Spacer } from "@chakra-ui/react";
-import { Route, useNavigate } from "react-router-dom";
+import { Button, Flex, Heading, Spacer, Text } from "@chakra-ui/react";
+import { useUnit } from "effector-react";
+import { Route, useNavigate, useParams } from "react-router-dom";
+import { products$ } from "../model/products";
+import { addItemInCart } from "../model/cart";
 
-export function ProductCard({ productId }) {
+export function ProductCard() {
+  const { productId } = useParams();
   const navigate = useNavigate();
+
+  const products = useUnit(products$);
+  const product = products.find(({ id }) => id === Number(productId));
+
   return (
     <Flex className="product-page">
       <div className="product-page__left">
@@ -16,12 +24,7 @@ export function ProductCard({ productId }) {
         <Button
           variant="solid"
           colorScheme="blue"
-          onClick={() => {
-            if (cartItems.includes(product)) {
-            } else {
-              setCartItems((items) => [...items, product]);
-            }
-          }}
+          onClick={() => addItemInCart(product)}
         >
           Add to cart
         </Button>

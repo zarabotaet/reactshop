@@ -38,7 +38,7 @@ function Product({ product }) {
           >
             Add to cart
           </Button>
-          <Link to={"/products/" + product.id}>
+          <Link to={"/product/" + product.id}>
             <Button variant="ghost" colorScheme="blue">
               About Product
             </Button>

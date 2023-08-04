@@ -26,9 +26,9 @@ export const cartItems$ = createStore({})
     cartItems[id].amount++;
     return cartItems;
   })
-  .on(decItemAmount, (store, id) => {
+  .on(decItemAmount, (cartItems, id) => {
     cartItems = { ...cartItems };
-    if (cartItems[id].amount === 0) {
+    if (cartItems[id].amount === 1) {
       delete cartItems[id];
     } else {
       cartItems[id].amount--;
