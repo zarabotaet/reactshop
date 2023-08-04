@@ -18,7 +18,7 @@ import {
   Stack,
 } from "@chakra-ui/react";
 
-export default function CheckoutPage({ cartItems, setCartItems }) {
+export function CheckoutPage({ cartItems, setCartItems }) {
   const [isComplete, setIsComplete] = useState(false);
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");

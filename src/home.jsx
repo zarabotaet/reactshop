@@ -213,7 +213,7 @@ function Products({ list, cartItems, setCartItems }) {
   return <div className="main-products">{products}</div>;
 }
 
-export default function HomePage({ list, cartItems, setCartItems }) {
+export function HomePage({ list, cartItems, setCartItems }) {
   const [listFilter, setListFilter] = useState(list);
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");

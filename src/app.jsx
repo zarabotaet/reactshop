@@ -1,9 +1,9 @@
 import { useEffect, useState, useContext } from "react";
 import { createStore, createEvent } from "effector";
 import { useStore } from "effector-react";
-import Header from "./header";
-import HomePage from "./home";
-import CheckoutPage from "./checkout";
+import { Header } from "./header";
+import { HomePage } from "./home";
+import { CheckoutPage } from "./checkout";
 import { Routes, Route, useNavigate } from "react-router-dom";
 import { Heading } from "@chakra-ui/react";
 import { Text } from "@chakra-ui/react";
@@ -16,32 +16,30 @@ const changeOne = createEvent();
 const changeCounter = createEvent();
 
 const cartItemsStore = createStore([])
-
   .on(setCartItems, (store, newStore) => {
     return newStore;
   })
   .on(changeOne, (store, id, newOne) => {
-    return store.map(el => {
+    return store.map((el) => {
       if (el.id === id) {
         return newOne;
       } else {
         return el;
       }
-    })
+    });
   })
   .on(changeCounter, (store, id, newCount) => {
-    return store.map(el => {
+    return store.map((el) => {
       if (el.id === id) {
         el.counter = newCount;
         return el;
       } else {
         return el;
       }
-    })
+    });
   });
 
 function ProductPage({ product, cartItems, setCartItems }) {
-
   const navigate = useNavigate();
   return (
     <Flex className="product-page">
@@ -72,7 +70,8 @@ function ProductPage({ product, cartItems, setCartItems }) {
     </Flex>
   );
 }
-function App() {
+
+export function App() {
   const cartItems = useStore(cartItemsStore);
 
   const [data, setData] = useState(null);
@@ -153,5 +152,3 @@ function App() {
     );
   }
 }
-
-export default App;

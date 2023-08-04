@@ -14,7 +14,6 @@ import {
 } from "@chakra-ui/react";
 
 export function CartPage({ cartItems, setCartItems }) {
-
   const navigate = useNavigate();
 
   function handleDelete(itemId) {
@@ -230,7 +229,7 @@ function CartBtn({ cartItems, setCartItems }) {
   }
 }
 
-export default function Header({ cartItems, setCartItems }) {
+export function Header({ cartItems, setCartItems }) {
   return (
     <header className="header">
       <div className="cart-container">
