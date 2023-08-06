@@ -1,12 +1,3 @@
-import { Link, Route, useNavigate } from "react-router-dom";
-import {
-  cartItemsList$,
-  decItemAmount,
-  deleteItemInCart,
-  incItemAmount,
-  totalPrice$,
-} from "../model/cart";
-import { useUnit } from "effector-react";
 import {
   Button,
   HStack,
@@ -17,7 +8,16 @@ import {
   Th,
   Thead,
   Tr,
-} from "@chakra-ui/react";
+} from '@chakra-ui/react'
+import { useUnit } from 'effector-react'
+import { Link, useNavigate } from 'react-router-dom'
+import {
+  $cartItemsList,
+  $totalPrice,
+  decItemAmount,
+  deleteItemInCart,
+  incItemAmount,
+} from '../model/cart'
 
 function CartItem({ title, price, id, amount }) {
   return (
@@ -35,23 +35,23 @@ function CartItem({ title, price, id, amount }) {
         <Button
           colorScheme="red"
           onClick={() => {
-            deleteItemInCart(id);
+            deleteItemInCart(id)
           }}
         >
           Delete
         </Button>
       </Td>
     </Tr>
-  );
+  )
 }
 
 export function Cart() {
-  const navigate = useNavigate();
-  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$]);
+  const navigate = useNavigate()
+  const [cartItems, totalPrice] = useUnit([$cartItemsList, $totalPrice])
 
-  let items = cartItems.map((item) => {
-    return <CartItem {...item} key={item.id} />;
-  });
+  const items = cartItems.map((item) => {
+    return <CartItem {...item} key={item.id} />
+  })
 
   if (cartItems.length > 0) {
     return (
@@ -76,15 +76,14 @@ export function Cart() {
           <Link to="/checkout">Checkout</Link>
         </Button>
       </div>
-    );
-  } else {
-    return (
-      <div className="cart-page">
-        <h2>There are no items in the cart</h2>
-        <Button onClick={() => navigate(-1)} colorScheme="red">
-          Add items to cart
-        </Button>
-      </div>
-    );
+    )
   }
+  return (
+    <div className="cart-page">
+      <h2>There are no items in the cart</h2>
+      <Button onClick={() => navigate(-1)} colorScheme="red">
+        Add items to cart
+      </Button>
+    </div>
+  )
 }
