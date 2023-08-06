@@ -5,12 +5,12 @@ import {
   createStore,
   restore,
   sample,
-} from "effector";
+} from 'effector'
 
 export const getProductsFx = createEffect(() =>
-  fetch("https://fakestoreapi.com/products").then((res) => res.json())
-);
+  fetch('https://fakestoreapi.com/products').then((res) => res.json()),
+)
 
-export const productsPending$ = getProductsFx.pending;
-export const products$ = restore(getProductsFx, []);
-export const productsFiltered$ = restore(getProductsFx, []);
+export const $productsPending = getProductsFx.pending
+export const $products = restore(getProductsFx, [])
+export const $productsFiltered = restore(getProductsFx, [])

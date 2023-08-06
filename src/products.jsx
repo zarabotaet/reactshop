@@ -9,12 +9,12 @@ import {
   Image,
   Stack,
   Text,
-} from "@chakra-ui/react";
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { productsFiltered$ } from "./model/products";
-import { useUnit } from "effector-react";
-import { addItemInCart } from "./model/cart";
+} from '@chakra-ui/react'
+import { useUnit } from 'effector-react'
+import React, { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { addItemInCart } from './model/cart'
+import { productsFiltered$ } from './model/products'
 
 function Product({ product }) {
   return (
@@ -38,7 +38,7 @@ function Product({ product }) {
           >
             Add to cart
           </Button>
-          <Link to={"/product/" + product.id}>
+          <Link to={'/product/' + product.id}>
             <Button variant="ghost" colorScheme="blue">
               About Product
             </Button>
@@ -46,21 +46,21 @@ function Product({ product }) {
         </ButtonGroup>
       </CardFooter>
     </Card>
-  );
+  )
 }
 
 export function Products() {
-  const products = useUnit(productsFiltered$);
+  const products = useUnit(productsFiltered$)
 
   if (products.length === 0) {
-    return "No items for your filter";
+    return 'No items for your filter'
   }
 
   return (
     <div className="main-products">
       {products.map((product) => {
-        return <Product key={product.id} product={product} />;
+        return <Product key={product.id} product={product} />
       })}
     </div>
-  );
+  )
 }

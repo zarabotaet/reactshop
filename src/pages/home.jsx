@@ -1,9 +1,9 @@
-import { Route } from "react-router-dom";
-import { Products } from "../products";
-import { Sidebar } from "../sidebar";
-import { useEffect, useState } from "react";
-import { useUnit } from "effector-react";
-import { products$ } from "../model/products";
+import { useUnit } from 'effector-react'
+import { useEffect, useState } from 'react'
+import { Route } from 'react-router-dom'
+import { products$ } from '../model/products'
+import { Products } from '../products'
+import { Sidebar } from '../sidebar'
 
 export function Home() {
   return (
@@ -11,5 +11,5 @@ export function Home() {
       <Sidebar />
       <Products />
     </div>
-  );
+  )
 }

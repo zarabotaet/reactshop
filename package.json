@@ -40,6 +40,6 @@
   },
   "lint-staged": {
     "*.{js,jsx}": "eslint --fix",
-    "*": "prettier --ignore-unknown --write --loglevel=silent"
+    "*": "prettier --ignore-unknown --write --log-level=silent"
   }
 }

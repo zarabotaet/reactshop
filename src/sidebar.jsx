@@ -5,26 +5,26 @@ import {
   NumberInput,
   NumberInputField,
   Select,
-} from "@chakra-ui/react";
-import { useUnit } from "effector-react";
-import { useEffect, useState } from "react";
-import { products$ } from "./model/products";
+} from '@chakra-ui/react'
+import { useUnit } from 'effector-react'
+import { useEffect, useState } from 'react'
 import {
+  categories$,
   HIGH,
   LOW,
-  RECENT,
-  categories$,
   maxPrices$,
   minPrices$,
+  RECENT,
   setMaxPrice,
   setMinPrice,
   setSelectedCategory,
   setSorterValue,
   sorterValue$,
-} from "./model/filter";
+} from './model/filter'
+import { products$ } from './model/products'
 
 function PriceFilter() {
-  const [minPrice, maxPrice] = useUnit([minPrices$, maxPrices$]);
+  const [minPrice, maxPrice] = useUnit([minPrices$, maxPrices$])
 
   return (
     <ListItem>
@@ -50,18 +50,18 @@ function PriceFilter() {
         </div>
       </form>
     </ListItem>
-  );
+  )
 }
 
 function Sorter() {
-  const sorterValue = useUnit(sorterValue$);
+  const sorterValue = useUnit(sorterValue$)
 
   return (
     <ListItem>
       <Select
         value={sorterValue}
         onChange={(e) => {
-          setSorterValue(e.target.value);
+          setSorterValue(e.target.value)
         }}
       >
         <option value={RECENT}>Featured</option>
@@ -69,16 +69,16 @@ function Sorter() {
         <option value={HIGH}>Price: High to Low</option>
       </Select>
     </ListItem>
-  );
+  )
 }
 
 function Categories() {
-  const [categories] = useUnit([categories$]);
+  const [categories] = useUnit([categories$])
 
   return (
     <>
       <ListItem>
-        <button onClick={() => setSelectedCategory("")}>ALL</button>
+        <button onClick={() => setSelectedCategory('')}>ALL</button>
       </ListItem>
       {categories.map((category) => {
         return (
@@ -87,10 +87,10 @@ function Categories() {
               {category.toUpperCase()}
             </button>
           </ListItem>
-        );
+        )
       })}
     </>
-  );
+  )
 }
 
 export function Sidebar() {
@@ -100,5 +100,5 @@ export function Sidebar() {
       <Sorter />
       <PriceFilter />
     </List>
-  );
+  )
 }
