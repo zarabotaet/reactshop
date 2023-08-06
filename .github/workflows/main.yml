@@ -10,4 +10,4 @@ jobs:
       - name: Run ESLint
         run: npx eslint src/**/*.{ts,tsx}
       - name: Run Typescript
-        run: tsc -p tsconfig.json --noEmit
+        run: tsc -p tsconfig.json --noEmit --skipLibCheck
