@@ -1,12 +1,18 @@
 import { createEvent, restore, sample } from 'effector'
 import { $products, $productsFiltered } from './products'
 
+enum FilterKeys {
+  RECENT = 'recent',
+  LOW = 'low',
+  HIGH = 'high',
+}
+
 export const RECENT = 'recent'
 export const LOW = 'low'
 export const HIGH = 'high'
 
-export const setSorterValue = createEvent()
-export const $sorterValue = restore(setSorterValue, RECENT)
+export const setSorterValue = createEvent<FilterKeys>()
+export const $sorterValue = restore(setSorterValue, FilterKeys.RECENT)
 
 sample({
   clock: setSorterValue,
@@ -14,13 +20,13 @@ sample({
   fn: (products, sorterValue) => {
     const productsCopy = [...products]
     switch (sorterValue) {
-      case RECENT:
+      case FilterKeys.RECENT:
         productsCopy.sort((a, b) => a.id - b.id)
         break
-      case LOW:
+      case FilterKeys.LOW:
         productsCopy.sort((a, b) => a.price - b.price)
         break
-      case HIGH:
+      case FilterKeys.HIGH:
         productsCopy.sort((a, b) => b.price - a.price)
         break
       default:
@@ -31,21 +37,21 @@ sample({
   target: $productsFiltered,
 })
 
-export const setMinPrice = createEvent()
+export const setMinPrice = createEvent<number>()
 export const $minPrices = restore(setMinPrice, 0)
 
-export const setMaxPrice = createEvent()
+export const setMaxPrice = createEvent<number>()
 export const $maxPrices = restore(setMaxPrice, 1000)
 
 export const $categories = $products.map((products) => [
   ...new Set(products.map((el) => el.category)),
 ])
-export const setSelectedCategory = createEvent()
+export const setSelectedCategory = createEvent<string>()
 export const $selectedCategory = restore(setSelectedCategory, '')
 
 sample({
   clock: [setMinPrice, setMaxPrice, setSelectedCategory],
-  source: [$products, $minPrices, $maxPrices, $selectedCategory],
+  source: [$products, $minPrices, $maxPrices, $selectedCategory] as const,
   fn: ([products, minPrice, maxPrice, selectedCategory]) => {
     let productsFiltered = products
     if (selectedCategory !== '') {
