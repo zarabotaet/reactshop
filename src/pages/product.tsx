@@ -11,6 +11,8 @@ export function ProductCard() {
   const products = useUnit($products)
   const product = products.find(({ id }) => id === Number(productId))
 
+  if (!product) return <>No such item in shop</>
+
   return (
     <Flex className="product-page">
       <div className="product-page__left">

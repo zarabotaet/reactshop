@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { App } from './app'
 
-ReactDOM.createRoot(document.querySelector('#root')).render(
+ReactDOM.createRoot(document.querySelector('#root') as Element).render(
   <React.StrictMode>
     <BrowserRouter>
       <ChakraProvider>

@@ -8,6 +8,6 @@ jobs:
       - name: Install modules
         run: npm ci
       - name: Run ESLint
-        run: npx eslint src/**/*.{js,jsx,ts}
+        run: npx eslint src/**/*.{ts,tsx}
       - name: Run Typescript
         run: tsc -p tsconfig.json --noEmit

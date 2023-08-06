@@ -11,9 +11,9 @@ import {
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { $cartItemsList, $totalPrice } from './model/cart'
+import { $cartItemsList, $totalPrice, CartItemT } from './model/cart'
 
-function PreviewCartItem({ title, price, amount }) {
+function PreviewCartItem({ title, price, amount }: CartItemT) {
   let shortTitle = title
   if (title.length > 10) {
     shortTitle = title.slice(0, 10) + '...'
@@ -28,7 +28,7 @@ function PreviewCartItem({ title, price, amount }) {
   )
 }
 
-function Cart({ closeCartPreview }) {
+function Cart({ closeCartPreview }: { closeCartPreview: () => void }) {
   const [cartItems, totalPrice] = useUnit([$cartItemsList, $totalPrice])
 
   const items = cartItems.map((item) => {

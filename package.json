@@ -39,7 +39,7 @@
     "vite": "^4.3.2"
   },
   "lint-staged": {
-    "*.{js,jsx,ts,tsx}": "eslint --fix",
-    "*": "prettier --ignore-unknown --write --log-level=silent"
+    "src/**/*.{js,jsx,ts,tsx}": "eslint --fix",
+    "src/**/*": "prettier --ignore-unknown --write --log-level=silent"
   }
 }

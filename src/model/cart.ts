@@ -1,13 +1,15 @@
 import { createEvent, createStore } from 'effector'
-import { Product } from './types'
+import { ProductT } from './types'
 
-export const addItemInCart = createEvent<Product>()
-export const deleteItemInCart = createEvent<string>()
-export const incItemAmount = createEvent<string>()
-export const decItemAmount = createEvent<string>()
+export const addItemInCart = createEvent<ProductT>()
+export const deleteItemInCart = createEvent<number>()
+export const incItemAmount = createEvent<number>()
+export const decItemAmount = createEvent<number>()
+
+export type CartItemT = ProductT & { amount: number }
 
 type CartItems = {
-  [key: string]: Product & { amount: number }
+  [key: string]: CartItemT
 }
 
 export const $cartItems = createStore<CartItems>({})

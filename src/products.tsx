@@ -14,8 +14,9 @@ import { useUnit } from 'effector-react'
 import { Link } from 'react-router-dom'
 import { addItemInCart } from './model/cart'
 import { $productsFiltered } from './model/products'
+import { ProductT } from './model/types'
 
-function Product({ product }) {
+function Product({ product }: { product: ProductT }) {
   return (
     <Card maxW="sm">
       <CardBody>
@@ -52,7 +53,7 @@ export function Products() {
   const products = useUnit($productsFiltered)
 
   if (products.length === 0) {
-    return 'No items for your filter'
+    return <>No items for your filter</>
   }
 
   return (

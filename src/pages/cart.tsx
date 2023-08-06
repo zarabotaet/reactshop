@@ -14,12 +14,13 @@ import { Link, useNavigate } from 'react-router-dom'
 import {
   $cartItemsList,
   $totalPrice,
+  CartItemT,
   decItemAmount,
   deleteItemInCart,
   incItemAmount,
 } from '../model/cart'
 
-function CartItem({ title, price, id, amount }) {
+function CartItem({ title, price, id, amount }: CartItemT) {
   return (
     <Tr>
       <Td>{title}</Td>

@@ -12,9 +12,7 @@ import {
   $maxPrices,
   $minPrices,
   $sorterValue,
-  HIGH,
-  LOW,
-  RECENT,
+  FilterKeys,
   setMaxPrice,
   setMinPrice,
   setSelectedCategory,
@@ -59,12 +57,12 @@ function Sorter() {
       <Select
         value={sorterValue}
         onChange={(e) => {
-          setSorterValue(e.target.value)
+          setSorterValue(e.target.value as FilterKeys)
         }}
       >
-        <option value={RECENT}>Featured</option>
-        <option value={LOW}>Price: Low to High</option>
-        <option value={HIGH}>Price: High to Low</option>
+        <option value={FilterKeys.RECENT}>Featured</option>
+        <option value={FilterKeys.LOW}>Price: Low to High</option>
+        <option value={FilterKeys.HIGH}>Price: High to Low</option>
       </Select>
     </ListItem>
   )

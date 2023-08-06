@@ -1,15 +1,11 @@
 import { createEvent, restore, sample } from 'effector'
 import { $products, $productsFiltered } from './products'
 
-enum FilterKeys {
+export enum FilterKeys {
   RECENT = 'recent',
   LOW = 'low',
   HIGH = 'high',
 }
-
-export const RECENT = 'recent'
-export const LOW = 'low'
-export const HIGH = 'high'
 
 export const setSorterValue = createEvent<FilterKeys>()
 export const $sorterValue = restore(setSorterValue, FilterKeys.RECENT)
@@ -37,11 +33,11 @@ sample({
   target: $productsFiltered,
 })
 
-export const setMinPrice = createEvent<number>()
-export const $minPrices = restore(setMinPrice, 0)
+export const setMinPrice = createEvent<string>()
+export const $minPrices = restore(setMinPrice, '0')
 
-export const setMaxPrice = createEvent<number>()
-export const $maxPrices = restore(setMaxPrice, 1000)
+export const setMaxPrice = createEvent<string>()
+export const $maxPrices = restore(setMaxPrice, '1000')
 
 export const $categories = $products.map((products) => [
   ...new Set(products.map((el) => el.category)),
@@ -60,7 +56,7 @@ sample({
       )
     }
     return productsFiltered.filter(
-      (el) => el.price >= minPrice && el.price <= maxPrice,
+      (el) => el.price >= Number(minPrice) && el.price <= Number(maxPrice),
     )
   },
   target: $productsFiltered,

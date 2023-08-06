@@ -1,4 +1,4 @@
-export type Product = {
+export type ProductT = {
   category: string
   description: string
   id: number
