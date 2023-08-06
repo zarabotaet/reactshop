@@ -11,10 +11,9 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
-import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { addItemInCart } from './model/cart'
-import { productsFiltered$ } from './model/products'
+import { $productsFiltered } from './model/products'
 
 function Product({ product }) {
   return (
@@ -50,7 +49,7 @@ function Product({ product }) {
 }
 
 export function Products() {
-  const products = useUnit(productsFiltered$)
+  const products = useUnit($productsFiltered)
 
   if (products.length === 0) {
     return 'No items for your filter'

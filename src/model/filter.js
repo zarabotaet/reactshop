@@ -1,5 +1,5 @@
 import { createEvent, restore, sample } from 'effector'
-import { $products, $productsFiltered, getProductsFx } from './products'
+import { $products, $productsFiltered } from './products'
 
 export const RECENT = 'recent'
 export const LOW = 'low'

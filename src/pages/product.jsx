@@ -1,14 +1,14 @@
 import { Button, Flex, Heading, Spacer, Text } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
-import { Route, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { addItemInCart } from '../model/cart'
-import { products$ } from '../model/products'
+import { $products } from '../model/products'
 
 export function ProductCard() {
   const { productId } = useParams()
   const navigate = useNavigate()
 
-  const products = useUnit(products$)
+  const products = useUnit($products)
   const product = products.find(({ id }) => id === Number(productId))
 
   return (

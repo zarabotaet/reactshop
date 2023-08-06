@@ -10,13 +10,13 @@ import {
   Tr,
 } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
-import { Link, Route, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {
-  cartItemsList$,
+  $cartItemsList,
+  $totalPrice,
   decItemAmount,
   deleteItemInCart,
   incItemAmount,
-  totalPrice$,
 } from '../model/cart'
 
 function CartItem({ title, price, id, amount }) {
@@ -47,7 +47,7 @@ function CartItem({ title, price, id, amount }) {
 
 export function Cart() {
   const navigate = useNavigate()
-  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$])
+  const [cartItems, totalPrice] = useUnit([$cartItemsList, $totalPrice])
 
   const items = cartItems.map((item) => {
     return <CartItem {...item} key={item.id} />

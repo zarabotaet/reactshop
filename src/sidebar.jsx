@@ -7,24 +7,22 @@ import {
   Select,
 } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
-import { useEffect, useState } from 'react'
 import {
-  categories$,
+  $categories,
+  $maxPrices,
+  $minPrices,
+  $sorterValue,
   HIGH,
   LOW,
-  maxPrices$,
-  minPrices$,
   RECENT,
   setMaxPrice,
   setMinPrice,
   setSelectedCategory,
   setSorterValue,
-  sorterValue$,
 } from './model/filter'
-import { products$ } from './model/products'
 
 function PriceFilter() {
-  const [minPrice, maxPrice] = useUnit([minPrices$, maxPrices$])
+  const [minPrice, maxPrice] = useUnit([$minPrices, $maxPrices])
 
   return (
     <ListItem>
@@ -54,7 +52,7 @@ function PriceFilter() {
 }
 
 function Sorter() {
-  const sorterValue = useUnit(sorterValue$)
+  const sorterValue = useUnit($sorterValue)
 
   return (
     <ListItem>
@@ -73,7 +71,7 @@ function Sorter() {
 }
 
 function Categories() {
-  const [categories] = useUnit([categories$])
+  const [categories] = useUnit([$categories])
 
   return (
     <>

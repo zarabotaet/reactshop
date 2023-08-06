@@ -1,11 +1,4 @@
-import {
-  combine,
-  createEffect,
-  createEvent,
-  createStore,
-  restore,
-  sample,
-} from 'effector'
+import { createEffect, restore } from 'effector'
 
 export const getProductsFx = createEffect(() =>
   fetch('https://fakestoreapi.com/products').then((res) => res.json()),

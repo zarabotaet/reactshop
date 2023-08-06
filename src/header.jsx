@@ -1,8 +1,6 @@
 import {
   Button,
-  HStack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
@@ -11,18 +9,19 @@ import {
   Tr,
 } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
-import { useEffect, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { cartItems$, cartItemsList$, totalPrice$ } from './model/cart'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
+import { $cartItemsList, $totalPrice } from './model/cart'
 
 function PreviewCartItem({ title, price, amount }) {
+  let shortTitle = title
   if (title.length > 10) {
-    title = title.slice(0, 10) + '...'
+    shortTitle = title.slice(0, 10) + '...'
   }
 
   return (
     <Tr>
-      <Td>{title}</Td>
+      <Td>{shortTitle}</Td>
       <Td>{price}</Td>
       <Td>{amount}</Td>
     </Tr>
@@ -30,7 +29,7 @@ function PreviewCartItem({ title, price, amount }) {
 }
 
 function Cart({ closeCartPreview }) {
-  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$])
+  const [cartItems, totalPrice] = useUnit([$cartItemsList, $totalPrice])
 
   const items = cartItems.map((item) => {
     return <PreviewCartItem {...item} key={item.id} />
@@ -67,7 +66,7 @@ function Cart({ closeCartPreview }) {
 
 function CartBtn() {
   const [cartOpen, setCartOpen] = useState(false)
-  const cartItemsList = useUnit(cartItemsList$)
+  const cartItemsList = useUnit($cartItemsList)
 
   if (cartOpen) {
     return (

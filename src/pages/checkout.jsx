@@ -1,33 +1,30 @@
 import {
   Button,
-  HStack,
   Input,
   Stack,
   Table,
-  TableCaption,
   TableContainer,
   Tbody,
   Td,
-  Tfoot,
   Th,
   Thead,
   Tr,
 } from '@chakra-ui/react'
 import { useUnit } from 'effector-react'
 import { useState } from 'react'
-import { Link, Route, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Swal from 'sweetalert2'
-import { cartItemsList$, totalPrice$ } from '../model/cart'
+import { $cartItemsList, $totalPrice } from '../model/cart'
 
 export function Checkout() {
   const [isComplete, setIsComplete] = useState(false)
   const [email, setEmail] = useState('')
   const [address, setAddress] = useState('')
-  const [cartItems, totalPrice] = useUnit([cartItemsList$, totalPrice$])
+  const [cartItems, totalPrice] = useUnit([$cartItemsList, $totalPrice])
 
   const items = cartItems.map((item) => {
     return (
-      <Tr>
+      <Tr key={item.id}>
         <Td>{item.title}</Td>
         <Td>{item.price}</Td>
         <Td>{item.amount}</Td>

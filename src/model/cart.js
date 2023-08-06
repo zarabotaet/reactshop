@@ -7,33 +7,33 @@ export const decItemAmount = createEvent()
 
 export const $cartItems = createStore({})
   .on(addItemInCart, (cartItems, newItem) => {
-    cartItems = { ...cartItems }
+    const cartItemsCopy = { ...cartItems }
     if (newItem.id in cartItems) {
       cartItems[newItem.id].amount++
     } else {
       cartItems[newItem.id] = { ...newItem, amount: 1 }
     }
 
-    return cartItems
+    return cartItemsCopy
   })
   .on(deleteItemInCart, (cartItems, id) => {
-    cartItems = { ...cartItems }
+    const cartItemsCopy = { ...cartItems }
     delete cartItems[id]
-    return cartItems
+    return cartItemsCopy
   })
   .on(incItemAmount, (cartItems, id) => {
-    cartItems = { ...cartItems }
+    const cartItemsCopy = { ...cartItems }
     cartItems[id].amount++
-    return cartItems
+    return cartItemsCopy
   })
   .on(decItemAmount, (cartItems, id) => {
-    cartItems = { ...cartItems }
+    const cartItemsCopy = { ...cartItems }
     if (cartItems[id].amount === 1) {
       delete cartItems[id]
     } else {
       cartItems[id].amount--
     }
-    return cartItems
+    return cartItemsCopy
   })
 
 export const $cartItemsList = $cartItems.map(Object.values)
