@@ -1,11 +1,16 @@
 import { createEvent, createStore } from 'effector'
+import { Product } from './types'
 
-export const addItemInCart = createEvent()
-export const deleteItemInCart = createEvent()
-export const incItemAmount = createEvent()
-export const decItemAmount = createEvent()
+export const addItemInCart = createEvent<Product>()
+export const deleteItemInCart = createEvent<string>()
+export const incItemAmount = createEvent<string>()
+export const decItemAmount = createEvent<string>()
 
-export const $cartItems = createStore({})
+type CartItems = {
+  [key: string]: Product & { amount: number }
+}
+
+export const $cartItems = createStore<CartItems>({})
   .on(addItemInCart, (cartItems, newItem) => {
     const cartItemsCopy = { ...cartItems }
     if (newItem.id in cartItemsCopy) {
@@ -36,7 +41,7 @@ export const $cartItems = createStore({})
     return cartItemsCopy
   })
 
-export const $cartItemsList = $cartItems.map(Object.values)
+export const $cartItemsList = $cartItems.map((items) => Object.values(items))
 export const $totalPrice = $cartItems.map((cartItems) => {
   return Object.values(cartItems).reduce(
     (acc, item) => acc + Number(item.price * item.amount),

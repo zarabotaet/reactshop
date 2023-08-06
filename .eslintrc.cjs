@@ -14,6 +14,7 @@ module.exports = configure({
   extend: {
     rules: {
       'effector/mandatory-scope-binding': 'off',
+      '@typescript-eslint/consistent-type-definitions': ['error', 'type'],
     },
   },
 })
