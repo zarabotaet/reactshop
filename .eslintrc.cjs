@@ -11,4 +11,7 @@ module.exports = configure({
     presets.react(),
     presets.effector(),
   ],
+  extend: {
+    'effector/mandatory-scope-binding': 'no-error',
+  },
 })
